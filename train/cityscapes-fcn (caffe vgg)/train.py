@@ -5,18 +5,18 @@ import random
 import numpy as np
 import torchvision.transforms as standard_transforms
 import torchvision.utils as vutils
-from tensorboard import SummaryWriter
+from tensorboardX import SummaryWriter
 from torch import optim
 from torch.autograd import Variable
 from torch.backends import cudnn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
-import utils.joint_transforms as joint_transforms
-import utils.transforms as extended_transforms
-from datasets import cityscapes
-from models import *
-from utils import check_mkdir, evaluate, AverageMeter, CrossEntropyLoss2d
+import pytorch_semantic_segmentation.utils.joint_transforms as joint_transforms
+import pytorch_semantic_segmentation.utils.transforms as extended_transforms
+from pytorch_semantic_segmentation.datasets import cityscapes
+from pytorch_semantic_segmentation.models import *
+from pytorch_semantic_segmentation.utils import check_mkdir, evaluate, AverageMeter, CrossEntropyLoss2d
 
 cudnn.benchmark = True
 
