@@ -25,7 +25,7 @@ from pytorch_baseline.utils import check_mkdir, evaluate, AverageMeter, CrossEnt
 cudnn.benchmark = True
 
 ckpt_path = '../../ckpt'
-exp_name = 'cityscapes-fcn8s (caffe vgg)'
+exp_name = 'cityscapes-cnn1'
 writer = SummaryWriter(os.path.join(ckpt_path, 'exp', exp_name))
 
 args = {
