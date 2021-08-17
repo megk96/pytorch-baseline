@@ -45,7 +45,7 @@ args = {
 
 
 def main():
-    net = FCN8s(num_classes=cityscapes.num_classes, caffe=True).cuda()
+    net = CNN1(num_classes=cityscapes.num_classes).cuda()
 
     if len(args['snapshot']) == 0:
         curr_epoch = 1
