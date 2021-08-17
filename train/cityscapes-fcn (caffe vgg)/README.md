@@ -11,3 +11,5 @@ validate the loss and mean_iu after training of one epoch
 
 ## Visualization
 ![](static/fcn8s-epoch328.jpg)
+
+

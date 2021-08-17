@@ -2,6 +2,7 @@ import datetime
 import os
 import random
 
+
 import numpy as np
 import torchvision.transforms as standard_transforms
 import torchvision.utils as vutils
@@ -20,16 +21,17 @@ from pytorch_semantic_segmentation.utils import check_mkdir, evaluate, AverageMe
 
 cudnn.benchmark = True
 
+
 ckpt_path = '../../ckpt'
 exp_name = 'cityscapes-fcn8s (caffe vgg)'
 writer = SummaryWriter(os.path.join(ckpt_path, 'exp', exp_name))
 
 args = {
-    'train_batch_size': 12,
+    'train_batch_size': 1,
     'epoch_num': 500,
     'lr': 1e-10,
     'weight_decay': 5e-4,
-    'input_size': (256, 512),
+    'input_size': (32, 64),
     'momentum': 0.99,
     'lr_patience': 100,  # large patience denotes fixed lr
     'snapshot': '',  # empty string denotes no snapshot
@@ -41,6 +43,7 @@ args = {
 
 
 def main():
+    torch.cuda.empty_cache()
     net = FCN8s(num_classes=cityscapes.num_classes, caffe=True).cuda()
 
     if len(args['snapshot']) == 0:
