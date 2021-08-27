@@ -66,13 +66,12 @@ def make_dataset(quality, mode):
     items = []
     categories = os.listdir(img_path)
     for c in categories:
-        if c == 'ulm':
+        if c == 'ulm' or c == 'munster':
             c_items = [name.split('_leftImg8bit.png')[0] for name in os.listdir(os.path.join(img_path, c))]
             for it in c_items:
                 # Creating the corresponding (rgb image, mask) set for filenames
                 item = (os.path.join(img_path, c, it + '_leftImg8bit.png'), os.path.join(mask_path, c, it + mask_postfix))
                 items.append(item)
-            print(items)
     return items
 
 
@@ -83,7 +82,6 @@ class CityScapes(data.Dataset):
     def __init__(self, quality, mode, joint_transform=None, sliding_crop=None, transform=None, target_transform=None):
         # self.imgs contains (rgb image, mask) filenames
         self.imgs = make_dataset(quality, mode)
-        print(len(self.imgs))
 
         # Store all the initial
         self.quality = quality
@@ -141,7 +139,8 @@ class CityScapes(data.Dataset):
                     img = self.transform(img)
                 if self.target_transform is not None:
                     mask = self.target_transform(mask)
-
+            print(img.shape)
+            print(mask.shape)
             for i in range(img.shape[0]):
                 for j in range(img.shape[1]):
                     pixels.append((img[i][j], mask[i][j]))

@@ -31,7 +31,7 @@ exp_name = 'cityscapes-cnn1'
 writer = SummaryWriter(os.path.join(ckpt_path, 'exp', exp_name))
 
 args = {
-    'train_batch_size': 1,
+    'train_batch_size': 256,
     'epoch_num': 2,
     'lr': 1e-10,
     'weight_decay': 5e-4,
@@ -152,10 +152,8 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         labels = Variable(labels).cuda()
         optimizer.zero_grad()
         embeddings = net(inputs)
-        embeddings = transpose(embeddings, 0, 1)
         print(inputs.shape)
         print(embeddings.shape)
-        labels = flatten(labels)
         print(labels.shape)
         N = inputs.size(0)
 
