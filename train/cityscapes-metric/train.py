@@ -157,8 +157,8 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         labels = flatten(labels)
         print(labels.shape)
         N = inputs.size(0)
-        e1, e2 = torch.split(embeddings, labels.shape[0]/2)
-        l1, l2 = torch.split(labels, labels.shape[0]/2)
+        e1, e2 = torch.split(embeddings, int(labels.shape[0]/2))
+        l1, l2 = torch.split(labels, int(labels.shape[0]/2))
 
         loss = loss_func(e1, l1)
         loss.backward()
