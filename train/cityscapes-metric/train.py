@@ -33,7 +33,7 @@ args = {
     'epoch_num': 2,
     'lr': 1e-10,
     'weight_decay': 5e-4,
-    'input_size': (8, 16),
+    'input_size': (64, 128),
     'momentum': 0.99,
     'lr_patience': 100,  # large patience denotes fixed lr
     'snapshot': '',  # empty string denotes no snapshot
