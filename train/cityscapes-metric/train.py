@@ -60,10 +60,14 @@ def main():
                                'mean_iu': float(split_snapshot[9]), 'fwavacc': float(split_snapshot[11])}
 
     net.train()
-
+    # The mean values for BGR intensities for Cityscapes dataset: 103.939, 116.779, 123.68
+    # The standard deviation is 1
     mean_std = ([103.939, 116.779, 123.68], [1.0, 1.0, 1.0])
 
+    # The images are scaled to 87.5% of their size
     short_size = int(min(args['input_size']) / 0.875)
+
+    # Joint transform is applied on both the images and the mask
     train_joint_transform = joint_transforms.Compose([
         joint_transforms.Scale(short_size),
         joint_transforms.RandomCrop(args['input_size']),
@@ -73,13 +77,18 @@ def main():
         joint_transforms.Scale(short_size),
         joint_transforms.CenterCrop(args['input_size'])
     ])
+
+    # Input transform is applied on the input image alone
     input_transform = standard_transforms.Compose([
         extended_transforms.FlipChannels(),
         standard_transforms.ToTensor(),
         standard_transforms.Lambda(lambda x: x.mul_(255)),
         standard_transforms.Normalize(*mean_std)
     ])
+    # Target transform is applied on the annotation mask alone
     target_transform = extended_transforms.MaskToTensor()
+
+    # Restore transform performs the reciprocal transforms for up-sampling
     restore_transform = standard_transforms.Compose([
         extended_transforms.DeNormalize(*mean_std),
         standard_transforms.Lambda(lambda x: x.div_(255)),
@@ -88,6 +97,7 @@ def main():
     ])
     visualize = standard_transforms.ToTensor()
 
+    # For both the train and val sets, the Cityscapes files are extracted and fed into the dataloader respectively
     train_set = cityscapes.CityScapes('fine', 'train', joint_transform=train_joint_transform,
                                       transform=input_transform, target_transform=target_transform)
     train_loader = DataLoader(train_set, batch_size=args['train_batch_size'], num_workers=8, shuffle=True)
@@ -95,8 +105,8 @@ def main():
                                     target_transform=target_transform)
     val_loader = DataLoader(val_set, batch_size=args['val_batch_size'], num_workers=8, shuffle=False)
 
-    criterion = CrossEntropyLoss2d(size_average=False, ignore_index=cityscapes.ignore_label).cuda()
-
+    # criterion = CrossEntropyLoss2d(size_average=False, ignore_index=cityscapes.ignore_label).cuda()
+    criterion = losses.TripletMarginLoss()
     optimizer = optim.Adam([
         {'params': [param for name, param in net.named_parameters() if name[-4:] == 'bias'],
          'lr': 2 * args['lr']},
@@ -120,7 +130,11 @@ def main():
         scheduler.step(val_loss)
 
 
+
+
 def train(train_loader, net, criterion, optimizer, epoch, train_args):
+
+
     miner = miners.MultiSimilarityMiner()
     loss_func = losses.TripletMarginLoss()
 
@@ -132,9 +146,13 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         labels = Variable(labels).cuda()
         optimizer.zero_grad()
         embeddings = net(inputs)
+        print(inputs.shape)
         print(embeddings.shape)
-        hard_pairs = miner(embeddings, labels)
-        loss = loss_func(embeddings, labels, hard_pairs)
+        label_embeddings = net(labels)
+        print("label embeddings")
+        print(label_embeddings.shape)
+        hard_pairs = miner(embeddings, label_embeddings)
+        loss = loss_func(embeddings, label_embeddings, hard_pairs)
         loss.backward()
         optimizer.step()
 
