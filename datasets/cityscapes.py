@@ -66,12 +66,16 @@ def make_dataset(quality, mode):
     items = []
     categories = os.listdir(img_path)
     for c in categories:
-        c_items = [name.split('_leftImg8bit.png')[0] for name in os.listdir(os.path.join(img_path, c))]
-        for it in c_items:
-            # Creating the corresponding (rgb image, mask) set for filenames
-            item = (os.path.join(img_path, c, it + '_leftImg8bit.png'), os.path.join(mask_path, c, it + mask_postfix))
-            items.append(item)
+        if c == 'ulm':
+            c_items = [name.split('_leftImg8bit.png')[0] for name in os.listdir(os.path.join(img_path, c))]
+            for it in c_items:
+                # Creating the corresponding (rgb image, mask) set for filenames
+                item = (os.path.join(img_path, c, it + '_leftImg8bit.png'), os.path.join(mask_path, c, it + mask_postfix))
+                items.append(item)
     return items
+
+
+
 
 
 class CityScapes(data.Dataset):
@@ -96,38 +100,56 @@ class CityScapes(data.Dataset):
                               14: ignore_label, 15: ignore_label, 16: ignore_label, 17: 5,
                               18: ignore_label, 19: 6, 20: 7, 21: 8, 22: 9, 23: 10, 24: 11, 25: 12, 26: 13, 27: 14,
                               28: 15, 29: ignore_label, 30: ignore_label, 31: 16, 32: 17, 33: 18}
+        self.pixels = self.get_pixels()
 
     def __getitem__(self, index):
-        img_path, mask_path = self.imgs[index]
-        img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
+        img, mask = self.pixels[index]
+        return img, mask
 
-        # Convert mask values to the converted values with the reduced classes
-        mask = np.array(mask)
-        mask_copy = mask.copy()
-        for k, v in self.id_to_trainid.items():
-            mask_copy[mask == k] = v
-        mask = Image.fromarray(mask_copy.astype(np.uint8))
 
-        # Apply all the necessary transformation functions
-        if self.joint_transform is not None:
-            img, mask = self.joint_transform(img, mask)
-        if self.sliding_crop is not None:
-            img_slices, mask_slices, slices_info = self.sliding_crop(img, mask)
-            if self.transform is not None:
-                img_slices = [self.transform(e) for e in img_slices]
-            if self.target_transform is not None:
-                mask_slices = [self.target_transform(e) for e in mask_slices]
-            img, mask = torch.stack(img_slices, 0), torch.stack(mask_slices, 0)
-            return img, mask, torch.LongTensor(slices_info)
-        else:
-            if self.transform is not None:
-                img = self.transform(img)
-            if self.target_transform is not None:
-                mask = self.target_transform(mask)
-            if index == 0:
-                print(img)
-                print(mask)
-            return img, mask
 
     def __len__(self):
         return len(self.imgs)
+
+    def get_pixels(self):
+        pixels = []
+        for image in self.imgs:
+            img_path, mask_path = image
+            img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
+
+            # Convert mask values to the converted values with the reduced classes
+            mask = np.array(mask)
+            mask_copy = mask.copy()
+            for k, v in self.id_to_trainid.items():
+                mask_copy[mask == k] = v
+            mask = Image.fromarray(mask_copy.astype(np.uint8))
+
+            # Apply all the necessary transformation functions
+            if self.joint_transform is not None:
+                img, mask = self.joint_transform(img, mask)
+            if self.sliding_crop is not None:
+                img_slices, mask_slices, slices_info = self.sliding_crop(img, mask)
+                if self.transform is not None:
+                    img_slices = [self.transform(e) for e in img_slices]
+                if self.target_transform is not None:
+                    mask_slices = [self.target_transform(e) for e in mask_slices]
+                img, mask = torch.stack(img_slices, 0), torch.stack(mask_slices, 0)
+            else:
+                if self.transform is not None:
+                    img = self.transform(img)
+                if self.target_transform is not None:
+                    mask = self.target_transform(mask)
+
+            pixel_values = img.load()
+            mask_values = mask.load()
+
+            for i in range(img.shape[0]):
+                for j in range(img.shape[1]):
+                    pixels.append((pixel_values[i][j], mask_values[i][j]))
+
+        return pixels
+
+
+
+
+
