@@ -83,9 +83,8 @@ class CityScapes(data.Dataset):
     def __init__(self, quality, mode, joint_transform=None, sliding_crop=None, transform=None, target_transform=None):
         # self.imgs contains (rgb image, mask) filenames
         self.imgs = make_dataset(quality, mode)
-        print(self.imgs)
-        if len(self.imgs) == 0:
-            raise RuntimeError('Found 0 images, please check the data set')
+        print(len(self.imgs))
+
         # Store all the initial
         self.quality = quality
         self.mode = mode
@@ -103,6 +102,7 @@ class CityScapes(data.Dataset):
                               18: ignore_label, 19: 6, 20: 7, 21: 8, 22: 9, 23: 10, 24: 11, 25: 12, 26: 13, 27: 14,
                               28: 15, 29: ignore_label, 30: ignore_label, 31: 16, 32: 17, 33: 18}
         self.pixels = self.get_pixels()
+        print(self.pixels)
 
     def __getitem__(self, index):
         img, mask = self.pixels[index]
