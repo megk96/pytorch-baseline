@@ -45,6 +45,7 @@ args = {
 
 
 def main():
+    torch.cuda.empty_cache()
     net = CNN1(embeddings=args['input_size'][0]*args['input_size'][1]).cuda()
 
     if len(args['snapshot']) == 0:
