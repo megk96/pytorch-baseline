@@ -140,12 +140,9 @@ class CityScapes(data.Dataset):
                 if self.target_transform is not None:
                     mask = self.target_transform(mask)
 
-            pixel_values = img.load()
-            mask_values = mask.load()
-
             for i in range(img.shape[0]):
                 for j in range(img.shape[1]):
-                    pixels.append((pixel_values[i][j], mask_values[i][j]))
+                    pixels.append((img[i][j], mask[i][j]))
 
         return pixels
 
