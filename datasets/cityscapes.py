@@ -83,6 +83,7 @@ class CityScapes(data.Dataset):
     def __init__(self, quality, mode, joint_transform=None, sliding_crop=None, transform=None, target_transform=None):
         # self.imgs contains (rgb image, mask) filenames
         self.imgs = make_dataset(quality, mode)
+        print(self.imgs)
         if len(self.imgs) == 0:
             raise RuntimeError('Found 0 images, please check the data set')
         # Store all the initial
