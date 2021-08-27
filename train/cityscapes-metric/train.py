@@ -48,7 +48,7 @@ args = {
 
 def main():
     torch.cuda.empty_cache()
-    net = CNN1(embeddings=args['input_size'][0]*args['input_size'][1]).cuda()
+    net = CNN1(embeddings=cityscapes.num_classes).cuda()
 
     if len(args['snapshot']) == 0:
         curr_epoch = 1
@@ -103,6 +103,7 @@ def main():
     # For both the train and val sets, the Cityscapes files are extracted and fed into the dataloader respectively
     train_set = cityscapes.CityScapes('fine', 'train', joint_transform=train_joint_transform,
                                       transform=input_transform, target_transform=target_transform)
+    print(train_set)
     train_loader = DataLoader(train_set, batch_size=args['train_batch_size'], num_workers=8, shuffle=True)
     val_set = cityscapes.CityScapes('fine', 'val', joint_transform=val_joint_transform, transform=input_transform,
                                     target_transform=target_transform)
