@@ -3,6 +3,8 @@ import os
 import random
 import sys
 
+import torch
+
 sys.path.insert(0, '/content/gdrive/My Drive/deep-metric-learning/')
 
 import numpy as np
@@ -130,6 +132,13 @@ def main():
         val_loss = validate(val_loader, net, criterion, optimizer, epoch, args, restore_transform, visualize)
         scheduler.step(val_loss)
 
+def encode(embeddings, labels, loss_func, optimizer):
+
+
+
+
+
+
 
 
 
@@ -152,11 +161,22 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         print(embeddings.shape)
         labels = flatten(labels)
         print(labels.shape)
-        loss = loss_func(embeddings, labels)
+        N = inputs.size(0)
+        e1, e2 = torch.split(embeddings, labels.shape[0]/2)
+        l1, l2 = torch.split(labels, labels.shape[0]/2)
+
+        loss = loss_func(e1, l1)
         loss.backward()
         optimizer.step()
-        N = inputs.size(0)
         train_loss.update(loss.data, N)
+
+        loss = loss_func(e2, l2)
+        loss.backward()
+        optimizer.step()
+        train_loss.update(loss.data, N)
+
+
+
 
         curr_iter += 1
         writer.add_scalar('train_loss', train_loss.avg, curr_iter)
@@ -164,6 +184,7 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         if (i + 1) % train_args['print_freq'] == 0:
             print('[epoch %d], [iter %d / %d], [train loss %.5f]' % (
                 epoch, i + 1, len(train_loader), train_loss.avg))
+
 
 
 def validate(val_loader, net, criterion, optimizer, epoch, train_args, restore, visualize):
