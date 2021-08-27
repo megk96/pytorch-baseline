@@ -150,7 +150,7 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         print(embeddings.shape)
         labels = flatten(labels)
         print(labels.shape)
-        hard_pairs = miner(embeddings, labels)
+        hard_pairs = miner(flatten(embeddings), labels)
         loss = loss_func(embeddings, labels, hard_pairs)
         loss.backward()
         optimizer.step()
