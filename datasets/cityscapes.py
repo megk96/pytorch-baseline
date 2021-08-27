@@ -124,7 +124,7 @@ class CityScapes(data.Dataset):
                 img = self.transform(img)
             if self.target_transform is not None:
                 mask = self.target_transform(mask)
-            if index == 1:
+            if index == 0:
                 print(img)
                 print(mask)
             return img, mask
