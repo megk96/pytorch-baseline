@@ -68,7 +68,7 @@ def main():
     mean_std = ([103.939, 116.779, 123.68], [1.0, 1.0, 1.0])
 
     # The images are scaled to 87.5% of their size
-    short_size = int(min(args['input_size']) / 0.875)
+    short_size = int(min(args['input_size']) / 1)
 
     # Joint transform is applied on both the images and the mask
     train_joint_transform = joint_transforms.Compose([
