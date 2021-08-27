@@ -9,7 +9,7 @@ import numpy as np
 import torchvision.transforms as standard_transforms
 import torchvision.utils as vutils
 from tensorboardX import SummaryWriter
-from torch import optim, flatten
+from torch import optim, flatten, transpose
 from torch.autograd import Variable
 from torch.backends import cudnn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
@@ -146,12 +146,13 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         labels = Variable(labels).cuda()
         optimizer.zero_grad()
         embeddings = net(inputs)
+        embeddings = transpose(embeddings, 0, 1)
         print(inputs.shape)
         print(embeddings.shape)
         labels = flatten(labels)
         print(labels.shape)
-        #hard_pairs = miner(embeddings, labels)
-        loss = loss_func(embeddings, labels)
+        hard_pairs = miner(embeddings, labels)
+        loss = loss_func(embeddings, labels, hard_pairs)
         loss.backward()
         optimizer.step()
         N = inputs.size(0)
