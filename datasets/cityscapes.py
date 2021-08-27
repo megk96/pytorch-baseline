@@ -66,7 +66,7 @@ def make_dataset(quality, mode):
     items = []
     categories = os.listdir(img_path)
     for c in categories:
-        if c == 'ulm':
+        if 'ulm' in c:
             c_items = [name.split('_leftImg8bit.png')[0] for name in os.listdir(os.path.join(img_path, c))]
             for it in c_items:
                 # Creating the corresponding (rgb image, mask) set for filenames
