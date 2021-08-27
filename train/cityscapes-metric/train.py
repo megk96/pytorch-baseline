@@ -132,11 +132,6 @@ def main():
         val_loss = validate(val_loader, net, criterion, optimizer, epoch, args, restore_transform, visualize)
         scheduler.step(val_loss)
 
-def encode(embeddings, labels, loss_func, optimizer):
-
-
-
-
 
 
 
