@@ -33,12 +33,12 @@ args = {
     'epoch_num': 2,
     'lr': 1e-10,
     'weight_decay': 5e-4,
-    'input_size': (512, 1024),
+    'input_size': (256, 512),
     'momentum': 0.99,
     'lr_patience': 100,  # large patience denotes fixed lr
     'snapshot': '',  # empty string denotes no snapshot
     'print_freq': 20,
-    'val_batch_size': 16,
+    'val_batch_size': 1,
     'val_save_to_img_file': False,
     'val_img_sample_rate': 0.05  # randomly sample some validation results to display
 }
