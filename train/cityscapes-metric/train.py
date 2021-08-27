@@ -9,7 +9,7 @@ import numpy as np
 import torchvision.transforms as standard_transforms
 import torchvision.utils as vutils
 from tensorboardX import SummaryWriter
-from torch import optim
+from torch import optim, flatten
 from torch.autograd import Variable
 from torch.backends import cudnn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
@@ -29,8 +29,8 @@ exp_name = 'cityscapes-cnn1'
 writer = SummaryWriter(os.path.join(ckpt_path, 'exp', exp_name))
 
 args = {
-    'train_batch_size': 12,
-    'epoch_num': 20,
+    'train_batch_size': 1,
+    'epoch_num': 2,
     'lr': 1e-10,
     'weight_decay': 5e-4,
     'input_size': (256, 512),
@@ -45,7 +45,7 @@ args = {
 
 
 def main():
-    net = CNN1(num_classes=cityscapes.num_classes).cuda()
+    net = CNN1(embeddings=args['input_size'][0]*args['input_size'][1]).cuda()
 
     if len(args['snapshot']) == 0:
         curr_epoch = 1
@@ -148,14 +148,13 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         embeddings = net(inputs)
         print(inputs.shape)
         print(embeddings.shape)
-        label_embeddings = net(labels)
-        print("label embeddings")
-        print(label_embeddings.shape)
-        hard_pairs = miner(embeddings, label_embeddings)
-        loss = loss_func(embeddings, label_embeddings, hard_pairs)
+        labels = flatten(labels)
+        print(labels.shape)
+        hard_pairs = miner(embeddings, labels)
+        loss = loss_func(embeddings, labels, hard_pairs)
         loss.backward()
         optimizer.step()
-
+        N = inputs.size(0)
         train_loss.update(loss.data, N)
 
         curr_iter += 1
