@@ -33,7 +33,7 @@ args = {
     'epoch_num': 2,
     'lr': 1e-10,
     'weight_decay': 5e-4,
-    'input_size': (128, 256),
+    'input_size': (256, 512),
     'momentum': 0.99,
     'lr_patience': 100,  # large patience denotes fixed lr
     'snapshot': '',  # empty string denotes no snapshot
@@ -66,7 +66,7 @@ def main():
     mean_std = ([103.939, 116.779, 123.68], [1.0, 1.0, 1.0])
 
     # The images are scaled to 87.5% of their size
-    short_size = int(min(args['input_size']) * 0.875)
+    short_size = int(min(args['input_size']) / 0.875)
 
     # Joint transform is applied on both the images and the mask
     train_joint_transform = joint_transforms.Compose([
