@@ -32,7 +32,7 @@ writer = SummaryWriter(os.path.join(ckpt_path, 'exp', exp_name))
 
 args = {
     'train_batch_size': 256,
-    'epoch_num': 2,
+    'epoch_num': 10,
     'lr': 1e-10,
     'weight_decay': 5e-4,
     'input_size': (256, 512),
@@ -103,7 +103,6 @@ def main():
     # For both the train and val sets, the Cityscapes files are extracted and fed into the dataloader respectively
     train_set = cityscapes.CityScapes('fine', 'train', joint_transform=train_joint_transform,
                                       transform=input_transform, target_transform=target_transform)
-    print(train_set)
     train_loader = DataLoader(train_set, batch_size=args['train_batch_size'], num_workers=8, shuffle=True)
     val_set = cityscapes.CityScapes('fine', 'val', joint_transform=val_joint_transform, transform=input_transform,
                                     target_transform=target_transform)
