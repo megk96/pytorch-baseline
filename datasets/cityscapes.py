@@ -141,8 +141,6 @@ class CityScapes(data.Dataset):
             for i in range(img.shape[1]):
                 for j in range(img.shape[2]):
                     pixel_map = (img[:, i, j], mask[i, j])
-                    print(pixel_map[0])
-                    print(pixel_map[1])
                     pixels.append(pixel_map)
 
         return pixels

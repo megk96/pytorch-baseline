@@ -157,7 +157,7 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         print(labels.shape)
         N = inputs.size(0)
         hard_pairs = miner(embeddings, labels)
-        loss = loss_func(embeddings, labels. hard_pairs)
+        loss = loss_func(embeddings, labels, hard_pairs)
         loss.backward()
         optimizer.step()
         train_loss.update(loss.data, N)
