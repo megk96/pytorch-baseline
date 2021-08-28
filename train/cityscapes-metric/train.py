@@ -145,6 +145,7 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
 
     train_loss = AverageMeter()
     curr_iter = (epoch - 1) * len(train_loader)
+    print(len(train_loader))
     for i, data in enumerate(train_loader):
         inputs, labels = data
         inputs = Variable(inputs).cuda()
