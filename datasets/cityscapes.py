@@ -100,7 +100,6 @@ class CityScapes(data.Dataset):
                               18: ignore_label, 19: 6, 20: 7, 21: 8, 22: 9, 23: 10, 24: 11, 25: 12, 26: 13, 27: 14,
                               28: 15, 29: ignore_label, 30: ignore_label, 31: 16, 32: 17, 33: 18}
         self.pixels = self.get_pixels()
-        print(self.pixels)
 
     def __getitem__(self, index):
         img, mask = self.pixels[index]
@@ -143,7 +142,9 @@ class CityScapes(data.Dataset):
             print(mask.shape)
             for i in range(img.shape[0]):
                 for j in range(img.shape[1]):
-                    pixels.append((img[i][j], mask[i][j]))
+                    pixel_map = (img[i][j], mask[i][j])
+                    print(pixel_map)
+                    pixels.append(pixel_map)
 
         return pixels
 

@@ -40,7 +40,7 @@ args = {
     'lr_patience': 100,  # large patience denotes fixed lr
     'snapshot': '',  # empty string denotes no snapshot
     'print_freq': 20,
-    'val_batch_size': 1,
+    'val_batch_size': 256,
     'val_save_to_img_file': False,
     'val_img_sample_rate': 0.05  # randomly sample some validation results to display
 }
@@ -156,8 +156,8 @@ def train(train_loader, net, criterion, optimizer, epoch, train_args):
         print(embeddings.shape)
         print(labels.shape)
         N = inputs.size(0)
-
-        loss = loss_func(embeddings, labels)
+        hard_pairs = miner(embeddings, labels)
+        loss = loss_func(embeddings, labels. hard_pairs)
         loss.backward()
         optimizer.step()
         train_loss.update(loss.data, N)
