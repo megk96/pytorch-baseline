@@ -128,10 +128,10 @@ def main():
     open(os.path.join(ckpt_path, exp_name, str(datetime.datetime.now()) + '.txt'), 'w').write(str(args) + '\n\n')
 
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=args['lr_patience'], min_lr=1e-10, verbose=True)
-    #for epoch in range(curr_epoch, args['epoch_num'] + 1):
-        #train(train_loader, net, criterion, optimizer, epoch, args)
-        #val_loss = validate(val_loader, net, criterion, optimizer, epoch, args, restore_transform, visualize)
-        #scheduler.step(val_loss)
+    for epoch in range(curr_epoch, args['epoch_num'] + 1):
+        train(train_loader, net, criterion, optimizer, epoch, args)
+        val_loss = validate(val_loader, net, criterion, optimizer, epoch, args, restore_transform, visualize)
+        scheduler.step(val_loss)
 
 
 

@@ -114,7 +114,7 @@ class CityScapes(data.Dataset):
         pixels = []
         for i, image in enumerate(self.imgs):
             print(i)
-            while i < 50:
+            while i < 25:
                 img_path, mask_path = image
                 img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
 
@@ -124,7 +124,7 @@ class CityScapes(data.Dataset):
                 for k, v in self.id_to_trainid.items():
                     mask_copy[mask == k] = v
                 mask = Image.fromarray(mask_copy.astype(np.uint8))
-    
+
                 # Apply all the necessary transformation functions
                 if self.joint_transform is not None:
                     img, mask = self.joint_transform(img, mask)
