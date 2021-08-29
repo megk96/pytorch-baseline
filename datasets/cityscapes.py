@@ -112,7 +112,8 @@ class CityScapes(data.Dataset):
 
     def get_pixels(self):
         pixels = []
-        for image in self.imgs:
+        for i, image in enumerate(self.imgs):
+            print(i)
             img_path, mask_path = image
             img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
 
