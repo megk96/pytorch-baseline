@@ -104,6 +104,7 @@ def main():
     train_set = cityscapes.CityScapes('fine', 'train', joint_transform=train_joint_transform,
                                       transform=input_transform, target_transform=target_transform)
     train_loader = DataLoader(train_set, batch_size=args['train_batch_size'], num_workers=8, shuffle=True)
+    print(len(train_loader))
     val_set = cityscapes.CityScapes('fine', 'val', joint_transform=val_joint_transform, transform=input_transform,
                                     target_transform=target_transform)
     val_loader = DataLoader(val_set, batch_size=args['val_batch_size'], num_workers=8, shuffle=False)
@@ -127,10 +128,10 @@ def main():
     open(os.path.join(ckpt_path, exp_name, str(datetime.datetime.now()) + '.txt'), 'w').write(str(args) + '\n\n')
 
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=args['lr_patience'], min_lr=1e-10, verbose=True)
-    for epoch in range(curr_epoch, args['epoch_num'] + 1):
-        train(train_loader, net, criterion, optimizer, epoch, args)
-        val_loss = validate(val_loader, net, criterion, optimizer, epoch, args, restore_transform, visualize)
-        scheduler.step(val_loss)
+    #for epoch in range(curr_epoch, args['epoch_num'] + 1):
+        #train(train_loader, net, criterion, optimizer, epoch, args)
+        #val_loss = validate(val_loader, net, criterion, optimizer, epoch, args, restore_transform, visualize)
+        #scheduler.step(val_loss)
 
 
 
