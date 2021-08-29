@@ -48,7 +48,7 @@ args = {
 
 def main():
     torch.cuda.empty_cache()
-    net = CNN1(embeddings=cityscapes.num_classes).cuda()
+    net = MLP([3, cityscapes.num_classes]).cuda()
 
     if len(args['snapshot']) == 0:
         curr_epoch = 1
@@ -104,7 +104,7 @@ def main():
     train_set = cityscapes.CityScapes('fine', 'train', joint_transform=train_joint_transform,
                                       transform=input_transform, target_transform=target_transform)
     train_loader = DataLoader(train_set, batch_size=args['train_batch_size'], num_workers=8, shuffle=True)
-    print(len(train_loader))
+
     val_set = cityscapes.CityScapes('fine', 'val', joint_transform=val_joint_transform, transform=input_transform,
                                     target_transform=target_transform)
     val_loader = DataLoader(val_set, batch_size=args['val_batch_size'], num_workers=8, shuffle=False)

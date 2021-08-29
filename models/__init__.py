@@ -7,3 +7,4 @@ from .psp_net import *
 from .seg_net import *
 from .u_net import *
 from .cnn1 import *
+from .mlp import *
