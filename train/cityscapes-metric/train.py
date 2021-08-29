@@ -48,7 +48,7 @@ args = {
 
 def main():
     torch.cuda.empty_cache()
-    net = CNN1(embeddings=cityscapes.num_classes).cuda()
+    net = UNet(num_classes=cityscapes.num_classes).cuda()
 
     if len(args['snapshot']) == 0:
         curr_epoch = 1
