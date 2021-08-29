@@ -114,35 +114,36 @@ class CityScapes(data.Dataset):
         pixels = []
         for i, image in enumerate(self.imgs):
             print(i)
-            img_path, mask_path = image
-            img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
+            while i < 50:
+                img_path, mask_path = image
+                img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
 
-            # Convert mask values to the converted values with the reduced classes
-            mask = np.array(mask)
-            mask_copy = mask.copy()
-            for k, v in self.id_to_trainid.items():
-                mask_copy[mask == k] = v
-            mask = Image.fromarray(mask_copy.astype(np.uint8))
-
-            # Apply all the necessary transformation functions
-            if self.joint_transform is not None:
-                img, mask = self.joint_transform(img, mask)
-            if self.sliding_crop is not None:
-                img_slices, mask_slices, slices_info = self.sliding_crop(img, mask)
-                if self.transform is not None:
-                    img_slices = [self.transform(e) for e in img_slices]
-                if self.target_transform is not None:
-                    mask_slices = [self.target_transform(e) for e in mask_slices]
-                img, mask = torch.stack(img_slices, 0), torch.stack(mask_slices, 0)
-            else:
-                if self.transform is not None:
-                    img = self.transform(img)
-                if self.target_transform is not None:
-                    mask = self.target_transform(mask)
-            for i in range(img.shape[1]):
-                for j in range(img.shape[2]):
-                    pixel_map = (img[:, i, j], mask[i, j])
-                    pixels.append(pixel_map)
+                # Convert mask values to the converted values with the reduced classes
+                mask = np.array(mask)
+                mask_copy = mask.copy()
+                for k, v in self.id_to_trainid.items():
+                    mask_copy[mask == k] = v
+                mask = Image.fromarray(mask_copy.astype(np.uint8))
+    
+                # Apply all the necessary transformation functions
+                if self.joint_transform is not None:
+                    img, mask = self.joint_transform(img, mask)
+                if self.sliding_crop is not None:
+                    img_slices, mask_slices, slices_info = self.sliding_crop(img, mask)
+                    if self.transform is not None:
+                        img_slices = [self.transform(e) for e in img_slices]
+                    if self.target_transform is not None:
+                        mask_slices = [self.target_transform(e) for e in mask_slices]
+                    img, mask = torch.stack(img_slices, 0), torch.stack(mask_slices, 0)
+                else:
+                    if self.transform is not None:
+                        img = self.transform(img)
+                    if self.target_transform is not None:
+                        mask = self.target_transform(mask)
+                for i in range(img.shape[1]):
+                    for j in range(img.shape[2]):
+                        pixel_map = (img[:, i, j], mask[i, j])
+                        pixels.append(pixel_map)
 
         return pixels
 
